@@ -1,32 +1,25 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
     <router-view/>
   </div>
 </template>
+<script>
+export default {
 
+}
+</script>
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+  font-family: 'iconfont';  /* Project id 3710512 */
+  src: url('//at.alicdn.com/t/c/font_3710512_bc1rjdjog4t.woff2?t=1666006160092') format('woff2'),
+  url('//at.alicdn.com/t/c/font_3710512_bc1rjdjog4t.woff?t=1666006160092') format('woff'),
+  url('//at.alicdn.com/t/c/font_3710512_bc1rjdjog4t.ttf?t=1666006160092') format('truetype');
+}
+.iconfont{
+  font-family:"iconfont" !important;
+  font-size:16px;font-style:normal;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;}
 </style>
