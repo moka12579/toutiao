@@ -6,6 +6,7 @@
           :finished="finish"
           finished-text="没有更多了"
           @load="onLoad"
+          :error="err"
       >
         <van-cell v-for="item1 in articleList" :key="item1._id" :title="item1.title" @click="$router.push(`/detail/${item1._id}`)" >
           <div v-if="item1.imageSrc.length !== 0" style="display: flex">
@@ -43,7 +44,8 @@ export default {
       articleList:[],
       loading:false,
       skip:0,
-      finish:false
+      finish:false,
+      err: false
 
     }
   },
@@ -78,6 +80,8 @@ export default {
             this.loading = false
           }
         }
+      }).catch(error => {
+        this.err = true
       })
     }
   },
