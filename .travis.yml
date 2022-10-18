@@ -7,7 +7,7 @@ branches:
   only:
     - master # build master branch only
 script:
-  - npm install
+  - npm install 
   - npm run build # generate static files
 deploy:
   provider: pages
