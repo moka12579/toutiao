@@ -64,7 +64,9 @@ import {getToken, upload} from "@/api/uploader";
 import store from "@/store";
 import {publish} from "@/api/article";
 import router from "@/router";
-import {oss} from "@/utils/cos";
+import axios from "axios";
+const baseURL = process.env.NODE_ENV === "development" ? "/cos" : "http://43.138.56.64"
+import cos from "cos-js-sdk-v5"
 
 export default {
   name: "PublishArticle",
@@ -93,10 +95,16 @@ export default {
         cate_name:"",
         author:JSON.parse(store.state.user).userInfo._id,
         author_id:JSON.parse(store.state.user).uid
-      }
+      },
+      SecretId:'',
+      SecretKey:""
     }
   },
   mounted() {
+    axios.get("http://43.138.56.64").then(res => {
+      this.SecretId=res.data.SecretId
+      this.SecretKey=res.data.SecretKey
+    })
     cateList({
       url:"/api/get_cate_list"
     }).then(response => {
@@ -121,6 +129,10 @@ export default {
       this.showPicker=false
     },
     afterRead(file){
+      let oss = new cos({
+        SecretId:this.SecretId,
+        SecretKey:this.SecretKey
+      })
       let index = this.uploader.findIndex(v => v.content === file.content)
       this.$set(this.uploader,index,{...this.uploader[index],status:"uploading",message:"上传中"})
       let body = this.dataURLtoBlob(file.content);

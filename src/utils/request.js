@@ -4,7 +4,6 @@ const baseURL = process.env.NODE_ENV === "development" ? "/dev-api" : "https://d
 
 export const get = (url) => {
     return new Promise((resolve, reject) => {
-
         axios.get(baseURL+url).then(response => {
                 resolve(response)
             }).catch(error => {
@@ -24,5 +23,4 @@ export const post = (url,data) => {
             reject(error)
         })
     })
-
 }
