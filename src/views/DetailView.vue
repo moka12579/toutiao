@@ -30,7 +30,7 @@
     <div style="display: flex;align-items: center;justify-content: space-between;padding: 10px">
       <h3>精彩评论</h3>
       <div style="color: #a19e9e;font-size: 14px">
-        <span>{{article.fav}} 赞</span> | <span>{{article.like}} 收藏</span>
+        <span>{{article.like}} 赞</span> | <span>{{article.fav}} 收藏</span>
       </div>
     </div>
     <van-list
@@ -41,21 +41,21 @@
         :error="err"
         error-text="加载出错，点击重新加载"
     >
-      <van-cell v-for="item in list" :key="item._id">
+      <van-cell v-for="(item,index) in list" :key="item._id" @click="commentList1(item)">
         <div style="width: 160px;display: flex;justify-content: normal">
           <img :src="item.info.avatar" alt="" style="width: 30px;height: 30px;border-radius: 50%;margin-right: 10px">
           <div style="display: flex;flex-direction: column;">
             <span style="font-size: 14px;line-height: 30px">{{item.info.nickname}}</span>
             <span>{{item.content}}</span>
             <div style="display: flex">
-              <div style="background: #f0f0f0;height: 25px;border-radius: 5px;padding: 0 10px;font-size: 12px" @click="showPopover=true" >
+              <div style="background: #f0f0f0;height: 25px;border-radius: 5px;padding: 0 2.67vw;font-size: 12px;width: 12.27vw" @click.stop="$set(list,index,{...item,showPopover:true})" >
                 回复
                 <van-icon name="arrow" style="display: inline-block;font-size: 12px"/>
               </div>
               <div style="margin-left: 8px">{{new Date(item.create_time).toLocaleDateString()}}</div>
             </div>
             <van-popover
-                v-model="showPopover"
+                v-model="item.showPopover"
                 trigger="click"
                 placement="bottom-start"
             >
@@ -113,6 +113,37 @@
         title="立即分享给好友"
         :options="options"
     />
+    <van-popup v-model="show1" position="bottom" :style="{ height: '70%' }" style="padding: 3.2vw;box-sizing: border-box" closeable>
+        <div style="width: 100%;display: flex;justify-content: normal">
+          <img :src="info.avatar" alt="" style="width: 30px;height: 30px;border-radius: 50%;margin-right: 10px">
+          <div style="display: flex;flex-direction: column;">
+            <span style="font-size: 14px;line-height: 30px">{{info.nickname}}</span>
+            <span>{{commentObj.content}}</span>
+          </div>
+        </div>
+      <hr>
+      <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+          :error="err"
+          error-text="加载出错，点击重新加载"
+      >
+        <van-cell v-for="(item,index) in list1" :key="item._id" @click="commentList1(item._id)">
+          <div style="width: 160px;display: flex;justify-content: normal">
+            <img :src="item.info.avatar" alt="" style="width: 30px;height: 30px;border-radius: 50%;margin-right: 10px">
+            <div style="display: flex;flex-direction: column;">
+              <span style="font-size: 14px;line-height: 30px">{{item.info.nickname}}</span>
+              <span>{{item.content}}</span>
+            </div>
+          </div>
+          <div>
+            <van-icon ref="commentGood" name="good-job-o" @click="commentThumbs(item._id)" />
+          </div>
+        </van-cell>
+      </van-list>
+    </van-popup>
   </div>
 </template>
 
@@ -159,7 +190,11 @@ export default {
         { name: '分享海报', icon: 'poster' },
         { name: '二维码', icon: 'qrcode' },
       ],
-      showPopover:false
+      skip1:0,
+      show1:false,
+      commentObj:{},
+      info:{},
+      list1:[]
     }
   },
   methods:{
@@ -182,6 +217,7 @@ export default {
             this.list = [...this.list,...response.data.data]
             this.$forceUpdate()
           }
+          this.list.forEach(item => item.showPopover=false)
         }
       }).catch(error => {
         this.err=true
@@ -282,6 +318,22 @@ export default {
           Toast.fail(res.data.msg)
         }
       })
+    },
+    commentList1(item){
+      this.commentObj=item
+      this.info = item.info
+      this.show1=true
+      commentList({
+        url: "/api/get_reply_list",
+        data:{
+          skip:this.skip1,
+          reply_comment_id:item._id,
+        }
+      }).then(res => {
+        if (res.data.code === 0){
+          this.list1=res.data.data
+        }
+      })
     }
   },
   mounted() {
@@ -348,5 +400,8 @@ export default {
 }
 ::v-deep .van-field__body{
   width: 100%;
+}
+::v-deep .van-list{
+  padding-bottom: 68px;
 }
 </style>

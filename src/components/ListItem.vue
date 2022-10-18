@@ -13,7 +13,12 @@
           <van-cell v-for="item1 in articleList" :key="item1._id" :title="item1.title" @click="$router.push(`/detail/${item1._id}`)" >
             <div v-if="item1.imageSrc.length !== 0" style="display: flex">
               <div v-for="(item2,index2) in item1.imageSrc" :key="index2">
-                <img :src="item2" alt="" style="width:112px;height: 70px">
+                <van-image
+                    width="112"
+                    height="70"
+                    lazy-load
+                    :src="item2"
+                />
               </div>
             </div>
             <div style="display: flex;justify-content: space-between;font-size: 12px;text-align: left">
@@ -29,7 +34,7 @@
 </template>
 
 <script>
-import {Search, Tabs, Tab, List, Cell, PullRefresh} from "vant"
+import {Search, Tabs, Tab, List, Cell, PullRefresh, Image} from "vant"
 import {articleList, cateList, commentTotal} from "@/api/home";
 import store from "@/store";
 export default {
@@ -40,7 +45,8 @@ export default {
     [Tab.name]:Tab,
     [List.name]:List,
     [Cell.name]:Cell,
-    [PullRefresh.name]:PullRefresh
+    [PullRefresh.name]:PullRefresh,
+    [Image.name]:Image,
   },
   data(){
     return{
@@ -102,9 +108,6 @@ export default {
     }).then(response => {
       if (response.data.code === 0){
         this.list = response.data.data
-        this.$nextTick(() => {
-          console.log(this.$refs.tab)
-        })
       }
     })
     store.state.done=true
