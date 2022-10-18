@@ -7,7 +7,8 @@ branches:
   only:
     - master # build master branch only
 script:
-  - git pull https://github.com/moka12579/toutiao.git gh-pages
+  - git checkout gh-pages
+  - git pull
   - npm install 
   - npm run build # generate static files
 deploy:
