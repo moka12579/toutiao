@@ -7,8 +7,6 @@ branches:
   only:
     - master # build master branch only
 script:
-  - git checkout gh-pages
-  - git pull
   - npm install 
   - npm run build # generate static files
 deploy:
