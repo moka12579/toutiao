@@ -31,6 +31,8 @@
         :finished="finished"
         finished-text="没有更多了"
         @load="onLoad"
+        :error="err"
+        error-text="加载出错，点击重新加载"
     >
       <van-cell v-for="item in list" :key="item._id">
         <div style="width: 160px;display: flex;justify-content: normal">
@@ -87,7 +89,8 @@ export default {
       list:[],
       arr:[],
       loading:false,
-      finished:false
+      finished:false,
+      err:false
     }
   },
   methods:{
@@ -97,13 +100,16 @@ export default {
         data:{
           article_id:this.arr[this.arr.length-1]
         }
+      }).then(response => {
+        this.loading=false
+        if (response.data.code === 0){
+          if (response.data.count < 10)this.finished=true
+          this.list = response.data.data
+        }
+      }).catch(error => {
+        this.err=true
+        this.loading=false
       })
-          .then(response => {
-            if (response.data.code === 0){
-              this.loading=false
-              this.list = response.data.data
-            }
-          })
     },
     onLoad() {
 

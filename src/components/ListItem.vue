@@ -1,32 +1,35 @@
 <template>
   <div>
-    <van-tab :title="item.name" v-for="item in list" :key="item._id" ref="tab">
-      <van-list
-          v-model="loading"
-          :finished="finish"
-          finished-text="没有更多了"
-          @load="onLoad"
-          :error="err"
-      >
-        <van-cell v-for="item1 in articleList" :key="item1._id" :title="item1.title" @click="$router.push(`/detail/${item1._id}`)" >
-          <div v-if="item1.imageSrc.length !== 0" style="display: flex">
-            <div v-for="(item2,index2) in item1.imageSrc" :key="index2">
-              <img :src="item2" alt="" style="width:112px;height: 70px">
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <van-tab :title="item.name" v-for="item in list" :key="item._id" ref="tab">
+        <van-list
+            v-model="loading"
+            :finished="finish"
+            finished-text="没有更多了"
+            @load="onLoad"
+            :error="err"
+            error-text="加载出错，点击重新加载"
+        >
+          <van-cell v-for="item1 in articleList" :key="item1._id" :title="item1.title" @click="$router.push(`/detail/${item1._id}`)" >
+            <div v-if="item1.imageSrc.length !== 0" style="display: flex">
+              <div v-for="(item2,index2) in item1.imageSrc" :key="index2">
+                <img :src="item2" alt="" style="width:112px;height: 70px">
+              </div>
             </div>
-          </div>
-          <div style="display: flex;justify-content: space-between;font-size: 12px;text-align: left">
-            <span style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;">作者：{{item1.author}}</span>
-            <span>{{item1.comment}}评论</span>
-            <span>发布日期：{{new Date(item1.time).toLocaleDateString()}}</span>
-          </div>
-        </van-cell>
-      </van-list>
-    </van-tab>
+            <div style="display: flex;justify-content: space-between;font-size: 12px;text-align: left">
+              <span style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;">作者：{{item1.author}}</span>
+              <span>{{item1.comment}}评论</span>
+              <span>发布日期：{{new Date(item1.time).toLocaleDateString()}}</span>
+            </div>
+          </van-cell>
+        </van-list>
+      </van-tab>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
-import {Search, Tabs, Tab, List, Cell} from "vant"
+import {Search, Tabs, Tab, List, Cell, PullRefresh} from "vant"
 import {articleList, cateList, commentTotal} from "@/api/home";
 import store from "@/store";
 export default {
@@ -36,7 +39,8 @@ export default {
     [Tabs.name]:Tabs,
     [Tab.name]:Tab,
     [List.name]:List,
-    [Cell.name]:Cell
+    [Cell.name]:Cell,
+    [PullRefresh.name]:PullRefresh
   },
   data(){
     return{
@@ -45,8 +49,8 @@ export default {
       loading:false,
       skip:0,
       finish:false,
-      err: false
-
+      err: false,
+      isLoading:false
     }
   },
   props:{
@@ -70,19 +74,25 @@ export default {
         }
       }).then(response => {
         if (response.data.code === 0) {
+          this.loading = false
+          this.isLoading = false
           if (first) {
             this.articleList = response.data.data
-            this.loading = false
           } else {
             if (response.data.data.length < 10) this.finish=true
             this.articleList=[...this.articleList,...response.data.data]
             this.$forceUpdate()
-            this.loading = false
           }
         }
       }).catch(error => {
         this.err = true
+        this.loading = false
       })
+    },
+    onRefresh(){
+      this.data1(this.active,true)
+      this.articleList = []
+      this.loading = true
     }
   },
   mounted() {
