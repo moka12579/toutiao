@@ -93,6 +93,7 @@ export default {
       this.data1(this.active,true)
       this.articleList = []
       this.loading = true
+      this.err = false
     }
   },
   mounted() {
@@ -111,6 +112,7 @@ export default {
   watch:{
     active:{
       handler(val){
+        this.err = false
         this.articleList = []
         this.loading=true
         this.finish=false
