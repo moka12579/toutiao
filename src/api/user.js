@@ -14,3 +14,8 @@ export const sendSMS = (options) => {
 export const register = (options) => {
   return post(options.url,options.data)
 }
+
+//查询用户
+export const selectUser = (options) => {
+  return post(options.url,options.data)
+}

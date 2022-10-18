@@ -46,6 +46,7 @@
 import {NavBar,Form,Field,Icon,Button,Toast} from "vant"
 import {login} from "@/api/user";
 import router from "@/router";
+import store from "@/store";
 export default {
   name: "LoginView",
   components:{
@@ -73,6 +74,7 @@ export default {
       }).then(response => {
         if (response.data.code === 0 ){
           localStorage.setItem("token",response.data.token)
+          store.commit('increment')
           Toast({
             type:"success",
             message:"登录成功",
@@ -83,7 +85,6 @@ export default {
         }else{
           Toast.fail(response.data.msg)
         }
-        console.log(response)
       })
     }
   }

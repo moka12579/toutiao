@@ -17,7 +17,7 @@ export const post = (url,data) => {
     return new Promise((resolve, reject) => {
         axios.post(
             baseURL+url,
-            data
+            data,
         ).then(response => {
             resolve(response)
         }).catch(error => {

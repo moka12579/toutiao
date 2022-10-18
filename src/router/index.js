@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from "@/store";
 
 
 Vue.use(VueRouter)
@@ -34,6 +35,11 @@ const routes = [
     path: "/detail/:articleId",
     name: "detail",
     component: () => import("../views/DetailView.vue")
+  },
+  {
+    path: "/search",
+    name: "search",
+    component: () => import("../views/SearchView.vue")
   }
 ]
 
@@ -41,6 +47,16 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to,form,next) => {
+  const whiteList = ["/login","/register","/"]
+  if (whiteList.findIndex(v => v === to.path) !== -1) return next()
+  const t = store.state.token
+  if(!t){
+    next("/login")
+  }
+  next()
 })
 
 export default router
