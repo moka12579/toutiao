@@ -67,6 +67,7 @@ import router from "@/router";
 import axios from "axios";
 const baseURL = process.env.NODE_ENV === "development" ? "/cos" : "http://43.138.56.64"
 import cos from "cos-js-sdk-v5"
+import CryptoJS from "crypto-js"
 
 export default {
   name: "PublishArticle",
@@ -93,8 +94,8 @@ export default {
         content:"",
         cate_id:"",
         cate_name:"",
-        author:JSON.parse(store.state.user).userInfo._id,
-        author_id:JSON.parse(store.state.user).uid
+        author:JSON.parse(store.getters.user).userInfo._id,
+        author_id:JSON.parse(store.getters.user).uid
       },
       SecretId:'',
       SecretKey:""
@@ -113,13 +114,6 @@ export default {
         this.columns = response.data.data.map(v=>v.name)
       }
     })
-    getToken({
-      url:"/upload/token"
-    }).then(response => {
-      if (response.data.code === 0){
-        this.uploadToken = response.data.token
-      }
-    })
   },
   methods:{
     changeCate(value,index){
@@ -128,44 +122,35 @@ export default {
       this.cate=value
       this.showPicker=false
     },
-    afterRead(file){
+    afterRead(file) {
       let oss = new cos({
-        SecretId:this.SecretId,
-        SecretKey:this.SecretKey
+        SecretId: this.SecretId,
+        SecretKey: this.SecretKey
       })
       let index = this.uploader.findIndex(v => v.content === file.content)
-      this.$set(this.uploader,index,{...this.uploader[index],status:"uploading",message:"上传中"})
+      this.$set(this.uploader, index, {...this.uploader[index], status: "uploading", message: "上传中"})
       let body = this.dataURLtoBlob(file.content);
       let config = {
         Bucket: 'toutiao-1300475487', /* 填入您自己的存储桶，必须字段 */
         Region: 'ap-nanjing',  /* 存储桶所在地域，例如ap-beijing，必须字段 */
-        Key: file.file.name,  /* 存储在桶里的对象键（例如1.jpg，a/b/test.txt），必须字段 */
+        Key: new Date().getTime()+"-"+file.file.name,  /* 存储在桶里的对象键（例如1.jpg，a/b/test.txt），必须字段 */
         Body: body,
         Origin: "http://mokacui.work",
-        AccessControlRequestMethod:"PUT"
+        AccessControlRequestMethod: "PUT",
       }
       oss.putObject(config, (err, data) => {
-        if (data.statusCode === 200){
-          this.$set(this.uploader,index,{...this.uploader[index],status:"done",message:"上传完成"})
-          this.publish.imageSrc.push("https://"+data.Location)
-        }else {
-          this.$set(this.uploader,index,{...this.uploader[index],status:"failed",message:"上传失败"})
+        if (data !== undefined) {
+          if (data.statusCode === 200) {
+            this.$set(this.uploader, index, {...this.uploader[index], status: "done", message: "上传完成"})
+            this.publish.imageSrc.push("http://" + data.Location)
+          } else {
+            this.$set(this.uploader, index, {...this.uploader[index], status: "failed", message: "上传失败"})
+          }
+        } else {
+          this.$set(this.uploader, index, {...this.uploader[index], status: "failed", message: "上传失败"})
         }
+
       });
-      /*upload({
-        url: "https://upload-z1.qiniup.com",
-        data:{
-          file:file.content,
-          key:file.file.name,
-          token:this.uploadToken
-        }
-      }).then(response => {
-        console.log(response)
-        this.$set(this.uploader,index,{...this.uploader[index],status:"done",message:"上传完成"})
-        this.publish.imageSrc.push("http://toutiao.longxiaokj.com/"+response.data.key)
-      }).catch(error => {
-        this.$set(this.uploader,index,{...this.uploader[index],status:"failed",message:"上传失败"})
-      })*/
     },
     publish1(){
       publish({
@@ -197,7 +182,7 @@ export default {
         u8arr[n] = bstr.charCodeAt(n);
       }
       return new Blob([u8arr], { type: mime });
-    }
+    },
   }
 }
 </script>

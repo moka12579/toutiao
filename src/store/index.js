@@ -15,9 +15,15 @@ export default new Vuex.Store({
     list:[]
   },
   getters: {
+    user(state){
+      return state.user
+    },
+    token(state){
+      return state.token
+    }
   },
   mutations: {
-    increment(){
+    increment(state){
       selectUser({
         url: "/user/getuserInfo",
         data: {
@@ -26,6 +32,8 @@ export default new Vuex.Store({
       }).then(res => {
         localStorage.setItem("user",JSON.stringify(res.data))
       })
+      state.token = localStorage.getItem("token")
+      state.user = JSON.parse(localStorage.getItem("user"))
     }
   },
   actions: {

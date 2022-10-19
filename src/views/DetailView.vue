@@ -31,7 +31,7 @@
 
 <script>
 import {collectionUp, comment, commentList, getDetail, thumbsUp} from "@/api/article";
-import {Button, Cell, Field, Icon, List, NavBar, Popup, Toast, Image, ShareSheet, Popover} from "vant";
+import {Toast, ShareSheet} from "vant";
 import store from "@/store";
 import Article from "@/components/detail/Article";
 import ArticleComment from "@/components/detail/ArticleComment";
@@ -42,17 +42,7 @@ import ReplyComment from "@/components/detail/ReplyComment";
 export default {
   name: "DetailView",
   components:{
-    [NavBar.name]:NavBar,
-    [Button.name]:Button,
-    [List.name]:List,
-    [Cell.name]:Cell,
-    [Icon.name]:Icon,
-    [Popup.name]:Popup,
-    [Field.name]:Field,
-    [Button.name]:Button,
-    [Image.name]:Image,
     [ShareSheet.name]:ShareSheet,
-    [Popover.name]:Popover,
     Article,
     ArticleComment,
     Comment,
