@@ -112,9 +112,8 @@ export default {
       store.state.comment.commentLoading=true
       this.data1(false)
     },
-    thumbs(){
+    thumbs(good){
       let url="/api/unlike"
-      let good = this.$refs.good
       if (good.classList[1].indexOf("-o") !== -1)url="/api/like"
       thumbsUp({
         url,
@@ -134,9 +133,8 @@ export default {
         }
       })
     },
-    collection(){
+    collection(coll){
       let url="/api/remove_fav"
-      let coll = this.$refs.collect
       if (coll.classList[1].indexOf("-o") !== -1)
         url = "/api/add_fav"
       collectionUp({
@@ -264,6 +262,7 @@ export default {
       if (response.data.code === 0){
         this.title = response.data.data.title
         this.article = {...response.data.data}
+        store.state.articleObj = this.article
       }
     })
     this.data1(true)

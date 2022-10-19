@@ -12,7 +12,8 @@ export default new Vuex.Store({
     showPopup:false,
     showShare:false,
     showReplyComment:false,
-    list:[]
+    list:[],
+    articleObj:{}
   },
   getters: {
     user(state){

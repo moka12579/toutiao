@@ -40,10 +40,21 @@ const routes = [
     path: "/search",
     name: "search",
     component: () => import("../views/SearchView.vue"),
-  },{
+  },
+  {
     path: '/result/:value',
     name: "result",
     component: () => import("../views/ResultView.vue")
+  },
+  {
+    path: '/publishHistory',
+    name: "publishHistory",
+    component: () => import("../views/PublishHistoryView.vue")
+  },
+  {
+    path: '/browseHistory',
+    name: "browseHistory",
+    component: () => import("../views/BrowseHistoryView.vue")
   }
 ]
 

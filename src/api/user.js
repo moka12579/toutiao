@@ -19,3 +19,13 @@ export const register = (options) => {
 export const selectUser = (options) => {
   return post(options.url,options.data)
 }
+
+//发布历史
+export const publishHistory = (options) => {
+  return post(options.url,options.data)
+}
+
+//收藏列表
+export const startList = (options) => {
+  return post(options.url,options.data)
+}

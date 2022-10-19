@@ -9,11 +9,11 @@
         <van-icon name="star-o" color="#e54b43" size="24" style="margin-bottom: 8px"/>
         收藏
       </li>
-      <li>
+      <li @click="$router.push('/browseHistory')">
         <van-icon name="clock-o" color="#e54b43" size="24" style="margin-bottom: 8px"/>
         浏览历史
       </li>
-      <li>
+      <li @click="$router.push('/publishHistory')">
         <i class="iconfont" style="color: #e54b43;font-size: 24px;margin-bottom: 8px">&#xe60a;</i>
         发布历史
       </li>

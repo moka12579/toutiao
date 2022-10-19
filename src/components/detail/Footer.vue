@@ -5,8 +5,8 @@
       <input type="text" placeholder="写评论..." class="xie" disabled="">
     </div>
     <div class="icons">
-      <van-icon name="star-o" size="24" ref="collect" @click="collection"/>
-      <van-icon name="good-job-o" size="24" ref="good" @click="thumbs"/>
+      <van-icon name="star-o" size="24" ref="collect" @click="collection($refs.collect)"/>
+      <van-icon name="good-job-o" size="24" ref="good" @click="thumbs($refs.good)"/>
       <van-icon name="share-o" size="24" @click="$store.state.showShare=true"/>
     </div>
   </div>
@@ -14,6 +14,8 @@
 
 <script>
 import {Icon} from "vant";
+import {startList} from "@/api/user";
+import store from "@/store";
 
 export default {
   name: "Footer",
@@ -29,6 +31,23 @@ export default {
       type:Function,
       required:true
     }
+  },
+  mounted() {
+    startList({
+      url:'/api/get_fav_list',
+      data:{
+        user_id:JSON.parse(store.getters.user).userInfo._id
+      }
+    }).then(res => {
+      let art = store.state.articleObj
+      if (res.data.code === 0){
+        let index = res.data.data.findIndex(v => v._id === art._id)
+        if (index !== -1){
+          this.$refs.collect.classList.replace("van-icon-star-o","van-icon-star")
+        }
+      }
+    })
+
   }
 }
 </script>
