@@ -8,7 +8,11 @@ export default new Vuex.Store({
   state: {
     done:false,
     token:localStorage.getItem("token"),
-    user:localStorage.getItem("user")
+    user:localStorage.getItem("user"),
+    showPopup:false,
+    showShare:false,
+    showReplyComment:false,
+    list:[]
   },
   getters: {
   },
@@ -27,5 +31,19 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
+    reply : {
+      state:() => ({
+        replyLoading:false,
+        replyErr:false,
+        replyFinished:false,
+      })
+    },
+    comment:{
+      state:() => ({
+        commentLoading:false,
+        commentErr:false,
+        commentFinished:false,
+      })
+    }
   }
 })

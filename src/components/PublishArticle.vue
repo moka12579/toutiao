@@ -101,7 +101,7 @@ export default {
     }
   },
   mounted() {
-    axios.get("http://43.138.56.64").then(res => {
+    axios.get("http://my.mokacui.work").then(res => {
       this.SecretId=res.data.SecretId
       this.SecretKey=res.data.SecretKey
     })

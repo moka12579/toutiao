@@ -1,149 +1,31 @@
 <template>
   <div>
-    <van-nav-bar
-        :title="title"
-        left-arrow
-        @click-left="$router.back()"
+    <Article :title="title" :articleObj="article"/>
+    <ArticleComment
+        :article_id="article_id"
+        :user_id="user_id"
+        :send-comment="sendComment"
+        :comment-thumbs="commentThumbs"
+        :comment-list1="commentList1"
+        :list="$store.state.list"
+        :on-load="onLoad"/>
+    <Footer
+      :collection="collection"
+      :thumbs="thumbs"
     />
-    <h1 style="padding: 10px;word-break:break-all;">{{article.title}}</h1>
-    <div style="padding: 10px;display: flex;justify-content: space-between">
-      <div style="display: flex">
-        <img :src="article.avatar" alt="" style="width: 37px;border-radius: 50%;margin-right: 8px">
-        <div style="display: flex;flex-direction: column">
-          <h4 style="margin: 0">{{article.nickname}}</h4>
-          <span>{{new Date(article.time).toLocaleDateString()}}</span>
-        </div>
-      </div>
-      <van-button type="default">关注</van-button>
-    </div>
-    <div style="padding: 10px;overflow: hidden;text-overflow:ellipsis;height: fit-content;white-space:pre-wrap;word-break:break-all;">
-      {{article.content}}
-    </div>
-    <div v-for="(item,index) in article.imageSrc" :key="index">
-      <van-image
-          fit="contain"
-          :src="item"
-          class="image"
-      />
-    </div>
-    <hr>
-    <div style="display: flex;align-items: center;justify-content: space-between;padding: 10px">
-      <h3>精彩评论</h3>
-      <div style="color: #a19e9e;font-size: 14px">
-        <span>{{article.like}} 赞</span> | <span>{{article.fav}} 收藏</span>
-      </div>
-    </div>
-    <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-        :error="err"
-        error-text="加载出错，点击重新加载"
-    >
-      <van-cell v-for="(item,index) in list" :key="item._id" @click="commentList1(item)">
-        <div style="width: 160px;display: flex;justify-content: normal">
-          <img :src="item.info.avatar" alt="" style="width: 30px;height: 30px;border-radius: 50%;margin-right: 10px">
-          <div style="display: flex;flex-direction: column;">
-            <span style="font-size: 14px;line-height: 30px">{{item.info.nickname}}</span>
-            <span>{{item.content}}</span>
-            <div style="display: flex">
-              <div style="background: #f0f0f0;height: 25px;border-radius: 5px;padding: 0 2.67vw;font-size: 12px;width: 12.27vw" @click.stop="$set(list,index,{...item,showPopover:true})" >
-                回复
-                <van-icon name="arrow" style="display: inline-block;font-size: 12px"/>
-              </div>
-              <div style="margin-left: 8px">{{new Date(item.create_time).toLocaleDateString()}}</div>
-            </div>
-            <van-popover
-                v-model="item.showPopover"
-                trigger="click"
-                placement="bottom-start"
-            >
-              <template #default>
-                <van-field
-                    v-model="text"
-                    type="textarea"
-                    maxlength="1000"
-                    show-word-limit
-                    rows="5"
-                    placeholder="留下你的评论..."
-                    autosize
-                />
-                <van-button
-                    type="primary"
-                    style="width: 100%;margin-top: 8px"
-                    @click="sendComment(false,item._id)"
-                >
-                  发送评论
-                </van-button>
-              </template>
-            </van-popover>
-          </div>
-        </div>
-        <div>
-          <van-icon ref="commentGood" name="good-job-o" @click="commentThumbs(item._id)" />
-        </div>
-      </van-cell>
-    </van-list>
-    <div class="footer">
-      <div style="position: relative" @click="show=true">
-        <i class="iconfont icon">&#xec7c;</i>
-        <input type="text" placeholder="写评论..." class="xie" disabled="">
-      </div>
-      <div class="icons">
-        <van-icon name="star-o" size="24" ref="collect" @click="collection"/>
-        <van-icon name="good-job-o" size="24" ref="good" @click="thumbs"/>
-        <van-icon name="share-o" size="24" @click="showShare=true"/>
-      </div>
-    </div>
-    <van-popup v-model="show" position="bottom" :style="{ height: '30%' }">
-      <van-field
-          v-model="text"
-          type="textarea"
-          maxlength="1000"
-          show-word-limit
-          rows="5"
-          placeholder="留下你的评论..."
-          autosize
-      />
-      <van-button type="primary" style="width: 100%;margin-top: 8px" @click="sendComment(true)">发送评论</van-button>
-    </van-popup>
+    <Comment :send-comment="sendComment"/>
     <van-share-sheet
-        v-model="showShare"
+        v-model="$store.state.showShare"
         title="立即分享给好友"
         :options="options"
     />
-    <van-popup v-model="show1" position="bottom" :style="{ height: '70%' }" style="padding: 3.2vw;box-sizing: border-box" closeable>
-        <div style="width: 100%;display: flex;justify-content: normal">
-          <img :src="info.avatar" alt="" style="width: 30px;height: 30px;border-radius: 50%;margin-right: 10px">
-          <div style="display: flex;flex-direction: column;">
-            <span style="font-size: 14px;line-height: 30px">{{info.nickname}}</span>
-            <span>{{commentObj.content}}</span>
-          </div>
-        </div>
-      <hr>
-      <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-          :error="err"
-          error-text="加载出错，点击重新加载"
-      >
-        <van-cell v-for="(item,index) in list1" :key="item._id" @click="commentList1(item._id)">
-          <div style="width: 160px;display: flex;justify-content: normal">
-            <img :src="item.info.avatar" alt="" style="width: 30px;height: 30px;border-radius: 50%;margin-right: 10px">
-            <div style="display: flex;flex-direction: column;">
-              <span style="font-size: 14px;line-height: 30px">{{item.info.nickname}}</span>
-              <span>{{item.content}}</span>
-            </div>
-          </div>
-          <div>
-            <van-icon ref="commentGood" name="good-job-o" @click="commentThumbs(item._id)" />
-          </div>
-        </van-cell>
-      </van-list>
-    </van-popup>
+    <ReplyComment
+        :comment-obj="commentObj"
+        :comment-thumbs="commentThumbs"
+        :on-load="onLoad"
+        :list="list1"
+        :info="info"
+    />
   </div>
 </template>
 
@@ -151,6 +33,11 @@
 import {collectionUp, comment, commentList, getDetail, thumbsUp} from "@/api/article";
 import {Button, Cell, Field, Icon, List, NavBar, Popup, Toast, Image, ShareSheet, Popover} from "vant";
 import store from "@/store";
+import Article from "@/components/detail/Article";
+import ArticleComment from "@/components/detail/ArticleComment";
+import Comment from "@/components/detail/Comment";
+import Footer from "@/components/detail/Footer";
+import ReplyComment from "@/components/detail/ReplyComment";
 
 export default {
   name: "DetailView",
@@ -165,7 +52,12 @@ export default {
     [Button.name]:Button,
     [Image.name]:Image,
     [ShareSheet.name]:ShareSheet,
-    [Popover.name]:Popover
+    [Popover.name]:Popover,
+    Article,
+    ArticleComment,
+    Comment,
+    Footer,
+    ReplyComment
   },
   data(){
     return{
@@ -200,7 +92,7 @@ export default {
   methods:{
     data1(first){
       if (first) this.skip=0
-      else this.skip+=11
+      else this.skip+=10
       commentList({
         url:"/api/get_comment_list",
         data:{
@@ -208,23 +100,26 @@ export default {
           skip:this.skip
         }
       }).then(response => {
-        this.loading=false
         if (response.data.code === 0){
-          if (response.data.count < 10)this.finished=true
+          store.state.comment.commentLoading=false
+          if (response.data.data.length <= 10)
+            store.state.comment.commentFinished=true
           if (first){
             this.list = response.data.data
+            store.state.list = this.list
           }else{
             this.list = [...this.list,...response.data.data]
+            store.state.list = this.list
             this.$forceUpdate()
           }
           this.list.forEach(item => item.showPopover=false)
         }
       }).catch(error => {
-        this.err=true
+        store.state.comment.commentErr=true
       })
     },
     onLoad() {
-      this.loading=true
+      store.state.comment.commentLoading=true
       this.data1(false)
     },
     thumbs(){
@@ -272,25 +167,40 @@ export default {
         }
       })
     },
-    sendComment(isArticle,id){
+    sendComment(content,isArticle,item){
+
       this.show=false
-      this.showPopover=false
+      if(!isArticle){
+        let index = store.state.list.findIndex(v => v._id === item._id)
+        if (index !== -1) store.state.list[index].showPopover=false
+        store.state.showPopup=false
+      }
       let data={
         user_id:this.user_id,
         article_id:this.article_id,
-        content:this.text
+        content
       }
       if (isArticle) data.comment_type = 0
       else {
         data.comment_type = 1
-        data.reply_comment_id = id
+        data.reply_comment_id = item._id
       }
       comment({
         url: "/api/add_comment",
         data
       }).then(res => {
+        store.state.showPopup=false
         if (res.data.code === 0){
-          Toast.success(res.data.msg)
+          Toast({
+            type:"success",
+            message:res.data.msg,
+            onClose:() => {
+              store.state.comment.commentLoading=true
+              store.state.comment.commentFinished=false
+              store.state.list=[]
+              this.data1(true)
+            }
+          })
         }else{
           Toast.fail(res.data.msg)
         }
@@ -319,10 +229,16 @@ export default {
         }
       })
     },
-    commentList1(item){
+    commentList1(item,first){
       this.commentObj=item
       this.info = item.info
       this.show1=true
+      this.list1=[]
+      store.state.reply.replyLoading=true
+      store.state.showReplyComment=true
+      store.state.reply.replyFinished=false
+      if (first) this.skip1=0
+      else this.skip1+=11
       commentList({
         url: "/api/get_reply_list",
         data:{
@@ -330,14 +246,23 @@ export default {
           reply_comment_id:item._id,
         }
       }).then(res => {
+        store.state.reply.replyLoading=false
         if (res.data.code === 0){
-          this.list1=res.data.data
+          if (res.data.data.length <= 10) store.state.reply.replyFinished=true
+          if (first){
+            this.list1 = res.data.data
+          }
+          else{
+            this.list1 = [...this.list1,...res.data.data]
+          }
         }
+      }).catch(err => {
+        store.state.replyErr=true
       })
     }
   },
   mounted() {
-    this.loading=true
+    store.state.comment.commentLoading=true
     this.arr = location.pathname.split("/")
     this.article_id = this.arr[this.arr.length-1]
     getDetail({
@@ -349,7 +274,6 @@ export default {
       if (response.data.code === 0){
         this.title = response.data.data.title
         this.article = {...response.data.data}
-        console.log(response)
       }
     })
     this.data1(true)
@@ -358,50 +282,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .van-cell__value{
-  display: flex;
-  justify-content: space-between;
-}
-.footer{
-  position: fixed;
-  height: 35px;
-  border-top: 1px solid #f4f4f4;
-  width: 100vw;
-  bottom: -1px;
-  padding: 16px;
-  background: white;
-  display: flex;
-  align-items: center;
-}
-.icon{
-  position: absolute;
-  top: 9.5px;
-  left: 10px;
-}
-.xie{
-  border-radius: 10px;
-  background: #f3f3f3;
-  outline: none;
-  border: none;
-  height: 35px;
-  padding-left: 32px;
-  width: 102px;
-}
-.icons{
-  display: flex;
-  justify-content: space-between;
-  width: 200px;
-  margin-left: 10px;
-}
-::v-deep .van-field__word-limit{
-  position: absolute;
-  right: 0;
-  bottom: 0;
-}
-::v-deep .van-field__body{
-  width: 100%;
-}
-::v-deep .van-list{
-  padding-bottom: 68px;
-}
+
 </style>

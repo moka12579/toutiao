@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-search disabled background="#8fc92a" placeholder="搜索你想看到的" />
+    <van-search disabled background="#8fc92a" placeholder="搜索你想看到的" @click="$router.push('/search')"/>
     <van-tabs v-model="active">
       <ListItem :active="active"/>
     </van-tabs>
