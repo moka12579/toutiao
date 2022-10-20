@@ -54,7 +54,7 @@ const routes = [
   {
     path: '/browseHistory',
     name: "browseHistory",
-    component: () => import("../views/BrowseHistoryView.vue")
+    component: () => import("../views/PublishHistoryView.vue")
   },
   {
     path: "/setup",

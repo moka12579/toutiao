@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-nav-bar
-        title="已发布"
+        :title="title"
         left-arrow
         class="navBar"
         @click-left="$router.back()"
@@ -12,7 +12,6 @@
        :finish="finish"
        :is-loading="isLoading"
        :err="err"
-       :on-load="onLoad"
        :delete-article="deleteArticle"
       />
     </van-pull-refresh>
@@ -43,24 +42,25 @@ export default {
       err:false,
       skip:0,
       list:[],
-      uid:JSON.parse(store.getters.user).uid
+      uid:JSON.parse(store.getters.user).uid,
+      title:this.$route.path === "/browseHistory" ? "浏览历史" : "已发布"
     }
   },
   methods:{
     onRefresh(){
-      this.data1(this.active,true)
+      this.data1(true)
       this.list = []
-      this.loading = true
+      store.state.loading = true
       this.err = false
     },
     data1(first){
-      let uid=JSON.parse(store.getters.user).uid
       if (first) this.skip = 0
       else this.skip+=11
+      let url=this.$route.path === "/browseHistory" ? "/api/get_history_list" : "/api/get_user_article_list"
       publishHistory({
-        url:"/api/get_user_article_list",
+        url,
         data:{
-          uid,
+          uid:this.uid,
           skip:this.skip
         }
       }).then(res => {
@@ -70,15 +70,11 @@ export default {
           this.list = res.data.data
         }else{
           this.list = [...this.list,...res.data.data]
-
         }
       }).catch(err => {
         this.loading=false
         this.err=true
       })
-    },
-    onLoad(){
-      this.data1(false)
     },
     deleteArticle(item){
       Dialog.confirm({
@@ -104,7 +100,6 @@ export default {
       }).catch(() => {
         // on cancel
       });
-
     }
   },
   mounted() {

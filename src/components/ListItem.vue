@@ -4,7 +4,6 @@
         v-model="$store.state.loading"
         :finished="finish"
         finished-text="没有更多了"
-        @load="onLoad"
         :error="err"
         error-text="加载出错，点击重新加载"
         :immediate-check="false"
@@ -80,10 +79,6 @@ export default {
       type: Boolean,
       default: false,
       required: true
-    },
-    onLoad:{
-      type:Function,
-      required:true
     },
     deleteArticle:{
       type:Function,
