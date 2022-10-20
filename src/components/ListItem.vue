@@ -12,7 +12,7 @@
       <van-cell v-for="item1 in articleList" :key="item1._id" @click="$router.push(`/detail/${item1._id}`)">
         <div style="display: flex;"
              :class="[{'jus':item1.imageSrc.length === 1},{'flex':item1.imageSrc.length === 3}]">
-          <div>{{ item1.title }}</div>
+          <div class="title">{{ item1.title }}</div>
           <div v-if="item1.imageSrc.length === 3" style="display: flex">
             <div v-for="(item2,index2) in item1.imageSrc" :key="index2">
               <van-image
@@ -109,5 +109,12 @@ export default {
 
 .flex {
   flex-direction: column;
+}
+.title{
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>
