@@ -143,19 +143,18 @@ export default {
       }).then(response => {
         switch (response.data.code) {
           case 1:
-            this.show=false
             Toast.fail(response.data.msg)
             break;
           case 0:
-            this.show=false
             Toast.success(response.data.msg)
             let s = 60
-            setInterval(() => {
+            let s1 = setInterval(() => {
               s--
               if (s == "00"){
                 this.show=false
                 this.text="60秒后重新发送"
                 s=60
+                clearInterval(s1)
                 return
               }
               s=Math.floor(s/10) === 0 ? "0"+s : s
@@ -170,10 +169,8 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route.params)
     if(this.$route.params !== {}){
       this.smsType = this.$route.params.smsType
-      this.title = "忘记密码"
     }
   }
 }
