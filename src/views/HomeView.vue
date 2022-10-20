@@ -91,7 +91,7 @@ export default {
       })
     },
     onRefresh(){
-      this.data1(this.active,true)
+      this.data1(true)
       this.articleList = []
       store.state.loading = true
       this.finish = false
