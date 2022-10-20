@@ -6,6 +6,7 @@
         finished-text="没有更多了"
         :error="err"
         error-text="加载出错，点击重新加载"
+        @load="onLoad"
         :immediate-check="false"
     >
       <van-cell v-for="item1 in articleList" :key="item1._id" @click="$router.push(`/detail/${item1._id}`)">
@@ -82,6 +83,10 @@ export default {
     },
     deleteArticle:{
       type:Function,
+    },
+    onLoad:{
+      type:Function,
+      required:true
     }
   },
 }

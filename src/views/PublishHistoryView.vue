@@ -13,7 +13,7 @@
        :is-loading="isLoading"
        :err="err"
        :delete-article="deleteArticle"
-      />
+       :on-load="onLoad"/>
     </van-pull-refresh>
   </div>
 </template>
@@ -102,6 +102,9 @@ export default {
       }).catch(() => {
         // on cancel
       });
+    },
+    onLoad(){
+      this.data1(false)
     }
   },
   mounted() {

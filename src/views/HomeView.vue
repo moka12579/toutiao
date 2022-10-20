@@ -61,7 +61,6 @@ export default {
   },
   methods:{
     onLoad(){
-      this.skip+=11
       this.data1(false)
     },
     data1(first){
