@@ -74,6 +74,7 @@ export default {
           skip:this.skip
         }
       }).then(response => {
+        this.isLoading=false
         store.state.loading = false
         if (response.data.code === 0) {
           if (first) {
