@@ -34,10 +34,11 @@
             />
           </div>
         </div>
-        <div style="display: flex;justify-content: space-between;font-size: 12px;text-align: left">
-            <span style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;">作者：{{item1.author }}</span>
+        <div style="display: flex;justify-content: space-between;font-size: 12px;text-align: left;align-items: center">
+          <span style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;">作者：{{item1.author }}</span>
           <span>{{ item1.comment }}评论</span>
           <span>发布日期：{{ new Date(item1.time).toLocaleDateString() }}</span>
+          <van-icon name="cross" v-if="$route.path === '/publishHistory'" @click.stop="deleteArticle(item1)"/>
         </div>
       </van-cell>
     </van-list>
@@ -45,7 +46,7 @@
 </template>
 
 <script>
-import {Search, Tabs, Tab, List, Cell, PullRefresh, Image} from "vant"
+import {Search, Tabs, Tab, List, Cell, PullRefresh, Image, Icon} from "vant"
 import {articleList, cateList, commentTotal} from "@/api/home";
 import store from "@/store";
 
@@ -59,6 +60,7 @@ export default {
     [Cell.name]: Cell,
     [PullRefresh.name]: PullRefresh,
     [Image.name]: Image,
+    [Icon.name]:Icon
   },
   props: {
     active: {
@@ -82,6 +84,9 @@ export default {
     onLoad:{
       type:Function,
       required:true
+    },
+    deleteArticle:{
+      type:Function,
     }
   },
 }

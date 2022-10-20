@@ -13,14 +13,15 @@
        :is-loading="isLoading"
        :err="err"
        :on-load="onLoad"
+       :delete-article="deleteArticle"
       />
     </van-pull-refresh>
   </div>
 </template>
 
 <script>
-import {Cell, List, PullRefresh, Image, NavBar} from "vant";
-import {publishHistory} from "@/api/user";
+import {Cell, List, PullRefresh, Image, NavBar, Toast, Dialog} from "vant";
+import {deleteArt, publishHistory} from "@/api/user";
 import store from "@/store";
 import ListItem from "@/components/ListItem";
 
@@ -41,7 +42,8 @@ export default {
       finish:false,
       err:false,
       skip:0,
-      list:[]
+      list:[],
+      uid:JSON.parse(store.getters.user).uid
     }
   },
   methods:{
@@ -77,6 +79,32 @@ export default {
     },
     onLoad(){
       this.data1(false)
+    },
+    deleteArticle(item){
+      Dialog.confirm({
+        title: '确定要删除吗？',
+      }).then(() => {
+        deleteArt({
+          url:"/api/del_user_article",
+          data:{
+            _id:item._id,
+            uid:this.uid
+          }
+        }).then(res => {
+          if (res.data.code === 0){
+            Toast.success(res.data.msg)
+            this.list=[]
+            store.state.loading=true
+            this.finish=false
+            this.data1(true)
+          }else{
+            Toast.fail(res.data.msg)
+          }
+        })
+      }).catch(() => {
+        // on cancel
+      });
+
     }
   },
   mounted() {

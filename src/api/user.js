@@ -44,3 +44,8 @@ export const updatePwd = (options) => {
 export const updateInfos = (options) => {
   return post(options.url,options.data)
 }
+
+//删除已发布的文章
+export const deleteArt = (options) => {
+  return post(options.url,options.data)
+}
