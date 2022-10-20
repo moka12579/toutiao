@@ -14,7 +14,7 @@
         <div style="display: flex;justify-content: normal">
           <img :src="item.info.avatar" alt="" style="width: 8vw;height: 8vw;border-radius: 50%;margin-right: 2.67vw">
           <div style="display: flex;flex-direction: column;">
-            <span style="font-size: 3.73vw;line-height: 8vw">{{item.info.nickname}}</span>
+            <span style="font-size: 3.73vw;line-height: 8vw">{{!item.info.nickname ? item.info.username : item.info.nickname}}</span>
             <span>{{item.content}}</span>
             <div style="display: flex">
               <div style="background: #f0f0f0;height: 6.67vw;border-radius: 1.33vw;padding: 0 2.67vw;font-size: 3.2vw;width: 12.27vw" @click.stop="$set(list,index,{...item,showPopover:true});show=true" >
