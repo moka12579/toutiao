@@ -13,6 +13,7 @@
     "crypto-js": "^4.1.1",
     "nanoid": "^4.0.0",
     "postcss-px-to-viewport": "^1.1.1",
+    "qiniu-js": "^3.4.1",
     "uview-ui": "^2.0.31",
     "vant": "^2.12.50",
     "vue": "^2.6.14",

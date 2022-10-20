@@ -47,6 +47,7 @@
           <van-uploader
               v-model="uploader"
               :after-read="afterRead"
+              :before-delete="beforeDelete"
           />
         </template>
       </van-field>
@@ -64,8 +65,7 @@ import {getToken, upload} from "@/api/uploader";
 import store from "@/store";
 import {publish} from "@/api/article";
 import router from "@/router";
-import axios from "axios";
-import cos from "cos-js-sdk-v5"
+import * as qiniu from 'qiniu-js'
 
 export default {
   name: "PublishArticle",
@@ -95,8 +95,6 @@ export default {
         author:JSON.parse(store.getters.user).userInfo._id,
         author_id:JSON.parse(store.getters.user).uid
       },
-      SecretId:'',
-      SecretKey:""
     }
   },
   mounted() {
@@ -124,34 +122,23 @@ export default {
       this.showPicker=false
     },
     afterRead(file) {
-      let oss = new cos({
-        SecretId: this.SecretId,
-        SecretKey: this.SecretKey
-      })
       let index = this.uploader.findIndex(v => v.content === file.content)
       this.$set(this.uploader, index, {...this.uploader[index], status: "uploading", message: "上传中"})
-      let body = this.dataURLtoBlob(file.content);
-      upload({
-        url: "https://upload-z1.qiniup.com",
-        data:{
-          file:this.blobToFile(body,file.file.name),
-          key:file.file.name,
-          token:this.uploadToken
-        }
-      }).then(response => {
-        console.log(response)
-        this.$set(this.uploader,index,{...this.uploader[index],status:"done",message:"上传完成"})
-        this.publish.imageSrc.push("http://toutiao.longxiaokj.com/"+response.data.key)
-      }).catch(error => {
+      const observable = qiniu.upload(file.file, file.file.name, this.uploadToken)
+      observable.subscribe(res => {
+      },error => {
         this.$set(this.uploader,index,{...this.uploader[index],status:"failed",message:"上传失败"})
+      },res => {
+        this.$set(this.uploader,index,{...this.uploader[index],status:"done",message:"上传完成"})
+        this.publish.imageSrc.push(`${res.key}`)
       })
     },
-    blobToFile(theBlob, fileName){
-      theBlob.lastModifiedDate = new Date();
-      theBlob.name = fileName;
-      return theBlob;
-    },
     publish1(){
+      if (this.publish.imageSrc.length===2||this.publish.imageSrc.length>3){
+        Toast.fail("请上传一张或三张照片")
+        return
+      }
+      this.publish.imageSrc=this.publish.imageSrc.map(v => `http://toutiao.longxiaokj.com/${v}`)
       publish({
         url:"/api/add_article",
         data:{
@@ -171,17 +158,13 @@ export default {
         }
       })
     },
-    dataURLtoBlob (dataurl) {
-      let arr = dataurl.split(',');
-      let mime = arr[0].match(/:(.*?);/)[1];
-      let bstr = atob(arr[1]);
-      let n = bstr.length;
-      let u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
+    beforeDelete(file){
+      let index = this.publish.imageSrc.findIndex(v => v === file.file.name)
+      if (index !== -1){
+        this.publish.imageSrc.splice(index,1)
       }
-      return new Blob([u8arr], { type: mime });
-    },
+      return true
+    }
   }
 }
 </script>
