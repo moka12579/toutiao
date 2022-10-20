@@ -1,5 +1,6 @@
 <template>
   <div>
+    <van-overlay :show="show" @click="show = false" />
     <van-list
         v-model="$store.state.comment.commentLoading"
         :finished="$store.state.comment.commentFinished"
@@ -16,7 +17,7 @@
             <span style="font-size: 3.73vw;line-height: 8vw">{{item.info.nickname}}</span>
             <span>{{item.content}}</span>
             <div style="display: flex">
-              <div style="background: #f0f0f0;height: 6.67vw;border-radius: 1.33vw;padding: 0 2.67vw;font-size: 3.2vw;width: 12.27vw" @click.stop="$set(list,index,{...item,showPopover:true})" >
+              <div style="background: #f0f0f0;height: 6.67vw;border-radius: 1.33vw;padding: 0 2.67vw;font-size: 3.2vw;width: 12.27vw" @click.stop="$set(list,index,{...item,showPopover:true});show=true" >
                 回复
                 <van-icon name="arrow" style="display: inline-block;font-size: 3.2vw"/>
               </div>
@@ -58,7 +59,7 @@
 
 <script>
 
-import {Button, Cell, Field, Icon, List, Popover, Toast} from "vant";
+import {Button, Cell, Field, Icon, List, Overlay, Popover, Toast} from "vant";
 import store from "@/store";
 
 export default {
@@ -69,12 +70,14 @@ export default {
     [Cell.name]:Cell,
     [Popover.name]:Popover,
     [Button.name]:Button,
-    [Field.name]:Field
+    [Field.name]:Field,
+    [Overlay.name]:Overlay
   },
   data(){
     return {
       text:'',
       skip:0,
+      show:false
     }
   },
   props:{

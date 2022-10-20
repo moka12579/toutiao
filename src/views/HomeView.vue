@@ -2,10 +2,9 @@
   <div>
     <van-search disabled background="#8fc92a" placeholder="搜索你想看到的" @click="$router.push('/search')"/>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <van-tabs v-model="active" animated>
+      <van-tabs v-model="$store.state.active" animated>
         <van-tab :title="item.name" v-for="item in list" :key="item._id">
           <ListItem
-              :active="active"
               :err="err"
               :articleList="articleList"
               :finish="finish"
@@ -55,7 +54,7 @@ export default {
       if (response.data.code === 0){
         this.list = response.data.data
         this.$forceUpdate()
-        this.data1(0,true)
+        this.data1(true)
       }
     })
     store.state.done=true
@@ -63,9 +62,10 @@ export default {
   methods:{
     onLoad(){
       this.skip+=11
-      this.data1(this.active,false)
+      this.data1(false)
     },
-    data1(val,first){
+    data1(first){
+      let val = store.state.active
       if (first)this.skip=0
       else this.skip+=11
       articleList({
@@ -77,7 +77,6 @@ export default {
       }).then(response => {
         store.state.loading = false
         if (response.data.code === 0) {
-          this.loading = false
           if (first) {
             this.articleList = response.data.data
           } else {
@@ -95,7 +94,15 @@ export default {
       this.data1(this.active,true)
       this.articleList = []
       store.state.loading = true
-      this.err = false
+      this.finish = false
+    }
+  },
+  watch:{
+    '$store.state.active'(){
+      this.articleList=[]
+      this.data1(true)
+      store.state.loading=true
+      this.finish=false
     }
   }
 }

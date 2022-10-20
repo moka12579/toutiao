@@ -55,7 +55,27 @@ const routes = [
     path: '/browseHistory',
     name: "browseHistory",
     component: () => import("../views/BrowseHistoryView.vue")
-  }
+  },
+  {
+    path: "/setup",
+    name: "setup",
+    component: () => import("../views/SetupView.vue")
+  },
+  {
+    path: "/forget/:smsType",
+    name: "forget",
+    component: () => import("../views/RegisterView.vue")
+  },
+  {
+    path: "/updatePwd",
+    name: "updatePwd",
+    component: () => import("../views/UpdatePwd.vue")
+  },
+  {
+    path: "/updateInfo",
+    name: "updateInfo",
+    component: () => import("../views/UpdateInfo.vue")
+  },
 ]
 
 const router = new VueRouter({
@@ -65,7 +85,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to,form,next) => {
-  const whiteList = ["/login","/register","/"]
+  const whiteList = ["/login","/register","/","/forget"]
   if (whiteList.findIndex(v => v === to.path) !== -1) return next()
   const t = store.state.token
   if(!t){

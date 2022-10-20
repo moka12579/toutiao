@@ -1,8 +1,7 @@
 <template>
   <div>
     <van-nav-bar
-        title="注册 / 登录"
-        left-arrow
+        :title="title"
         class="navBar"
     />
     <van-form @submit="register1">
@@ -24,7 +23,7 @@
           type="password"
           name="密码"
           placeholder="密码"
-          :rules="[{ required: true, message: '请填写密码', pattern: /^[a-zA-Z]\w{5,17}$/}]"
+          :rules="[{ required: true, message: '请尝试重新填写密码', pattern: /^[a-zA-Z]\w{5,17}$/}]"
       >
         <template #label>
           <i class="iconfont">&#xe8b2;</i>
@@ -45,7 +44,7 @@
       </van-field>
       <div style="display: flex;justify-content: space-around">
         <span>注册完成了吗？去<span style="color: #e54b43" @click="$router.push('/login')">登录</span>吧！</span>
-        <span style="color: #e54b43;text-align: right" @click="$router.push('/login')">忘记密码</span>
+        <span style="color: #e54b43;text-align: right" @click="$router.push('/forget/login')">忘记密码</span>
       </div>
       <div style="margin: 16px;">
         <van-button round block type="info" native-type="submit" style="background: #e54b43;border: 1px solid #e54b43">提交</van-button>
@@ -56,7 +55,7 @@
 
 <script>
 import {NavBar,Form,Field,Icon,Button,Toast} from "vant"
-import {sendSMS, register} from "@/api/user";
+import {sendSMS, register, forget} from "@/api/user";
 import router from "@/router";
 export default {
   name: "RegisterView",
@@ -74,30 +73,59 @@ export default {
       password:"",
       sms:"",
       show:false,
-      text:"60秒后重新发送"
+      text:"60秒后重新发送",
+      smsType:"register",
+      title:"注册 / 登录"
     }
   },
   methods:{
     register1(){
-      register({
-        url:"/user/reg",
-        data:{
-          username:this.tel,
-          password:this.password,
-          vercode:this.sms
-        }
-      }).then(response => {
-        if (response.data.code == 0){
-          localStorage.setItem("token",response.data.token)
-          Toast({
-            type:"success",
-            message:response.data.msg,
-            onClose:() => router.push("/login")
+      switch (this.smsType) {
+        case "register":
+          register({
+            url:"/user/reg",
+            data:{
+              username:this.tel,
+              password:this.password,
+              vercode:this.sms
+            }
+          }).then(response => {
+            if (response.data.code == 0){
+              localStorage.setItem("token",response.data.token)
+              Toast({
+                type:"success",
+                message:response.data.msg,
+                onClose:() => router.push("/login")
+              })
+            }else{
+              Toast.fail(response.data.msg)
+            }
           })
-        }else{
-          Toast.fail(response.data.msg)
-        }
-      })
+          break;
+        case "login":
+          forget({
+            url:"/user/forget",
+            data:{
+              username:this.tel,
+              password:this.password,
+              vercode:this.sms
+            }
+          }).then(response => {
+            console.log(response)
+            if (response.data.code == 0){
+              localStorage.removeItem("token")
+              Toast({
+                type:"success",
+                message:response.data.msg+"请重新登录",
+                onClose:() => router.push("/login")
+              })
+            }else{
+              Toast.fail(response.data.msg)
+            }
+          })
+          break;
+      }
+
     },
     send(){
       if (this.tel.trim().length === 0){
@@ -108,7 +136,7 @@ export default {
         url:"/user/sendSms",
         data:{
           mobile:this.tel,
-          type:"register"
+          type:this.smsType
         }
       }).then(response => {
         switch (response.data.code) {
@@ -133,6 +161,13 @@ export default {
             break;
         }
       })
+    }
+  },
+  mounted() {
+    console.log(this.$route.params)
+    if(this.$route.params !== {}){
+      this.smsType = this.$route.params.smsType
+      this.title = "忘记密码"
     }
   }
 }

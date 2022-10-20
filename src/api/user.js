@@ -29,3 +29,18 @@ export const publishHistory = (options) => {
 export const startList = (options) => {
   return post(options.url,options.data)
 }
+
+//忘记密码
+export const forget = (options) => {
+  return post(options.url,options.data)
+}
+
+//修改密码
+export const updatePwd = (options) => {
+  return post(options.url,options.data)
+}
+
+//修改个人信息
+export const updateInfos = (options) => {
+  return post(options.url,options.data)
+}

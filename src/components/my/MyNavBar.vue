@@ -5,7 +5,7 @@
     >
       <template #right>
         <van-icon name="chat-o" style="margin-right: 10px"/>
-        <van-icon name="setting-o" />
+        <van-icon name="setting-o" @click="$router.push('/setup')"/>
       </template>
     </van-nav-bar>
   </div>
