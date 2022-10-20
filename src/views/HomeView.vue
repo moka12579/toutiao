@@ -98,6 +98,7 @@ export default {
   },
   watch:{
     '$store.state.active'(){
+      this.skip=0
       this.articleList=[]
       this.data1(true)
       store.state.loading=true

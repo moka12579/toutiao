@@ -2,7 +2,7 @@
   <div class="banner">
     <div class="up">
       <div style="display: flex;align-items: center">
-        <img src="http://toutiao.longxiaokj.com/1635908337872_9r24h3e9vq4.image/svg+xml" alt="">
+        <img :src="avatar" alt="">
         <div style="font-size: 4.27vw;margin-left: 2.13vw">
           {{nickname}}
         </div>
@@ -41,14 +41,16 @@ export default {
     return{
       nickname:"",
       publish_num:0,
-      liked_num:0
+      liked_num:0,
+      avatar:""
     }
   },
   mounted() {
-    const {publish_num,liked_num,userInfo:{nickname}} = JSON.parse(store.getters.user)
+    const {publish_num,liked_num,userInfo:{nickname,avatar}} = JSON.parse(store.getters.user)
     this.publish_num = publish_num
     this.publish_num = liked_num
     this.nickname = nickname
+    this.avatar = !avatar ? "http://toutiao.longxiaokj.com/1635908337872_9r24h3e9vq4.image/svg+xml" : avatar
   }
 }
 </script>
