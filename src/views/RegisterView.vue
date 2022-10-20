@@ -34,6 +34,7 @@
           center
           clearable
           placeholder="请输入短信验证码"
+          :rules="[{ required: true, message: '请填写验证码', pattern: /^\d{6}$/}]"
       >
         <template #button>
           <van-button size="small" :loading="show" :loading-text="text" ref="sendSMS" @click="send" native-type="button" type="primary">发送验证码</van-button>
@@ -111,7 +112,6 @@ export default {
               vercode:this.sms
             }
           }).then(response => {
-            console.log(response)
             if (response.data.code == 0){
               localStorage.removeItem("token")
               Toast({
@@ -128,8 +128,10 @@ export default {
 
     },
     send(){
+      this.show=true
       if (this.tel.trim().length === 0){
         Toast.fail("请先输入手机号")
+        this.show=false
         return
       }
       sendSMS({
@@ -141,11 +143,12 @@ export default {
       }).then(response => {
         switch (response.data.code) {
           case 1:
+            this.show=false
             Toast.fail(response.data.msg)
             break;
           case 0:
+            this.show=false
             Toast.success(response.data.msg)
-            this.show=true
             let s = 60
             setInterval(() => {
               s--
@@ -160,6 +163,9 @@ export default {
             },1000)
             break;
         }
+      }).catch(err => {
+        this.show=false
+        Toast.fail("请求出错")
       })
     }
   },

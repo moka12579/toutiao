@@ -10,7 +10,7 @@
       <van-cell-group>
         <van-cell>
           <van-field
-              v-model="username"
+              v-model="nickname"
               name="用户名"
               label="用户名"
               placeholder="用户名"
@@ -104,7 +104,7 @@ export default {
   },
   data(){
     return{
-      username:"",
+      nickname:"",
       avatar:"",
       fileList:[],
       currentDate:"",
@@ -113,7 +113,8 @@ export default {
       maxDate:new Date(),
       minDate:new Date(1970,0,1),
       sex:"1",
-      uid:JSON.parse(store.getters.user).uid
+      uid:JSON.parse(store.getters.user).uid,
+      sex1:""
     }
   },
   methods:{
@@ -123,7 +124,7 @@ export default {
         data:{
           uid:this.uid,
           avatar:this.avatar,
-          nickname:this.username,
+          nickname:this.nickname,
           birthday:this.birthday,
           sex:this.sex1
         }
@@ -163,15 +164,17 @@ export default {
       this.show=false
     },
     changeSex(event){
-      console.log(event)
+      this.sex1 = event === 2 ? "女" : "男"
     }
   },
   mounted() {
-    const {username,avatar,birthday,sex} = JSON.parse(store.getters.user).userInfo
-    this.username = username
+    const {nickname,avatar,birthday,sex2} = JSON.parse(store.getters.user).userInfo
+    this.nickname = nickname
     this.avatar = avatar
-    this.birthday = !birthday&&new Date().toLocaleDateString()
-    this.sex = sex === "男" ? 1 : 2
+    this.birthday = birthday ? birthday : new Date().toLocaleDateString()
+    let arr = birthday.split("/")
+    this.currentDate = new Date(arr[0],arr[1],arr[2])
+    this.sex = sex2 === "男" ? 1 : 2
     getToken({
       url:"/upload/token"
     }).then(response => {
@@ -179,11 +182,6 @@ export default {
         this.uploadToken = response.data.token
       }
     })
-  },
-  computed:{
-    sex1(){
-      return this.sex === 1 ? "男" : "女"
-    }
   }
 }
 </script>

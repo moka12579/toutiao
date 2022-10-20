@@ -34,9 +34,9 @@ export default new Vuex.Store({
         }
       }).then(res => {
         localStorage.setItem("user",JSON.stringify(res.data))
+        state.token = localStorage.getItem("token")
+        state.user = localStorage.getItem("user")
       })
-      state.token = localStorage.getItem("token")
-      state.user = JSON.parse(localStorage.getItem("user"))
     }
   },
   actions: {
