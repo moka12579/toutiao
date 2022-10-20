@@ -64,6 +64,7 @@ export default {
           skip:this.skip
         }
       }).then(res => {
+        this.isLoading=false
         store.state.loading=false
         if (res.data.data.length <= 10) this.finish=true
         if (res.data.code === 0){
@@ -72,6 +73,7 @@ export default {
           this.list = [...this.list,...res.data.data]
         }
       }).catch(err => {
+        this.isLoading=false
         this.loading=false
         this.err=true
       })
