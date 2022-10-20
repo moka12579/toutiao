@@ -252,7 +252,7 @@ export default {
   mounted() {
     store.state.comment.commentLoading=true
     this.arr = location.pathname.split("/")
-    this.article_id = this.arr[this.arr.length-1]
+    this.article_id = this.$route.params.articleId
     getDetail({
       url:"/api/get_article_detail",
       data:{
