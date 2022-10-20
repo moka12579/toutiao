@@ -122,7 +122,6 @@ export default {
       this.showPicker=false
     },
     afterRead(file) {
-      console.log(file)
       let index = this.uploader.findIndex(v => v.content === file.content)
       this.$set(this.uploader, index, {...this.uploader[index], status: "uploading", message: "上传中"})
       const observable = qiniu.upload(file.file, new Date().getTime()+"-"+file.file.name, this.uploadToken)
