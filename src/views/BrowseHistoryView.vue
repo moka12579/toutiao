@@ -7,47 +7,12 @@
         @click-left="$router.back()"
     />
     <van-pull-refresh v-model="isLoading"  @refresh="onRefresh">
-      <van-list
-          v-model="loading"
-          :finished="finish"
-          finished-text="没有更多了"
-          @load="onLoad"
-          :error="err"
-          error-text="加载出错，点击重新加载"
-          :immediate-check="false"
-      >
-        <van-cell v-for="item1 in list" :key="item1._id" @click="$router.push(`/detail/${item1._id}`)">
-          <div style="display: flex;" :class="[{'jus':item1.imageSrc.length === 1},{'flex':item1.imageSrc.length === 3}]">
-            <div >{{item1.title}}</div>
-            <div v-if="item1.imageSrc.length === 3" style="display: flex">
-              <div v-for="(item2,index2) in item1.imageSrc" :key="index2">
-                <van-image
-                    width="112"
-                    height="70"
-                    lazy-load
-                    :src="item2"
-                    referer="mokacui.work"
-                />
-              </div>
-            </div>
-            <div v-else-if="item1.imageSrc.length === 1">
-              <van-image
-                  width="112"
-                  height="70"
-                  lazy-load
-                  :src="item1.imageSrc[0]"
-                  referer="mokacui.work"
-              />
-            </div>
-          </div>
-          <div style="display: flex;justify-content: space-between;font-size: 12px;text-align: left" >
-            <span style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;">作者：{{item1.author}}</span>
-            <span>{{item1.comment}}评论</span>
-            <span>发布日期：{{new Date(item1.time).toLocaleDateString()}}</span>
-          </div>
-        </van-cell>
-      </van-list>
-
+      <ListItem
+        :article-list="list"
+        :finish="finish"
+        :err="err"
+        :on-load="onLoad"
+      />
     </van-pull-refresh>
   </div>
 </template>
@@ -56,6 +21,7 @@
 import {Cell, List, PullRefresh, Image, NavBar} from "vant";
 import {publishHistory} from "@/api/user";
 import store from "@/store";
+import ListItem from "@/components/ListItem";
 export default {
   name: "BrowseHistoryView",
   components:{
@@ -63,7 +29,8 @@ export default {
     [List.name]:List,
     [Cell.name]:Cell,
     [Image.name]:Image,
-    [NavBar.name]:NavBar
+    [NavBar.name]:NavBar,
+    ListItem
   },
   data(){
     return{
@@ -93,7 +60,7 @@ export default {
           skip:this.skip
         }
       }).then(res => {
-        this.loading=false
+        store.state.loading=false
         if (res.data.data.length <= 10) this.finish=true
         if (res.data.code === 0){
           this.list = res.data.data
@@ -102,7 +69,7 @@ export default {
 
         }
       }).catch(err => {
-        this.loading=false
+        store.state.loading=false
         this.err=true
       })
     },
@@ -111,7 +78,7 @@ export default {
     }
   },
   mounted() {
-    this.loading=false
+    store.state.loading=true
     this.data1(true)
   }
 }
