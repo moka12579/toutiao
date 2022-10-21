@@ -9,17 +9,26 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import("../views/HomeView.vue")
+    component: () => import("../views/HomeView.vue"),
+    meta:{
+      keepAlive:true
+    }
   },
   {
     path: '/publishArticle',
     name: 'publishArticle',
-    component: () => import( '../views/PublishArticleView.vue')
+    component: () => import( '../views/PublishArticleView.vue'),
+    meta:{
+      keepAlive:true
+    }
   },
   {
     path: '/my',
     name: 'my',
-    component: () => import( '../views/MyView.vue')
+    component: () => import( '../views/MyView.vue'),
+    meta:{
+      keepAlive:true
+    }
   },
   {
     path: '/login',
