@@ -101,6 +101,7 @@ export default {
       this.articleList=[]
       this.data1(true)
       store.state.loading=true
+      store.state.err=false
       this.finish=false
     }
   }
