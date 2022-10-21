@@ -5,7 +5,6 @@
       <van-tabs v-model="$store.state.active" animated>
         <van-tab :title="item.name" v-for="item in list" :key="item._id">
           <ListItem
-              :err="err"
               :articleList="articleList"
               :finish="finish"
               :on-load="onLoad"
@@ -40,7 +39,6 @@ export default {
       active:0,
       list:[],
       loading:false,
-      err:false,
       finish:false,
       isLoading:false,
       articleList:[],
@@ -86,7 +84,7 @@ export default {
           }
         }
       }).catch(error => {
-        this.err = true
+        store.state.err = true
         store.state.loading = false
       })
     },

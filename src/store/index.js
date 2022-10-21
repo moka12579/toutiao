@@ -15,7 +15,8 @@ export default new Vuex.Store({
     list:[],
     articleObj:{},
     loading:false,
-    active:0
+    active:0,
+    err:false
   },
   getters: {
     user(state){

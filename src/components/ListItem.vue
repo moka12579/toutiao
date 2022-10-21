@@ -4,7 +4,7 @@
         v-model="$store.state.loading"
         :finished="finish"
         finished-text="没有更多了"
-        :error="err"
+        :error.sync="$store.state.err"
         error-text="加载出错，点击重新加载"
         @load="onLoad"
         :immediate-check="false"
@@ -72,11 +72,6 @@ export default {
       required: true,
     },
     finish: {
-      type: Boolean,
-      default: false,
-      required: true
-    },
-    err: {
       type: Boolean,
       default: false,
       required: true

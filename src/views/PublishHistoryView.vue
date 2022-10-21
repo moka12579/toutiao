@@ -74,8 +74,8 @@ export default {
         }
       }).catch(err => {
         this.isLoading=false
-        this.loading=false
-        this.err=true
+        store.state.loading=false
+        store.state.err = true
       })
     },
     deleteArticle(item){
