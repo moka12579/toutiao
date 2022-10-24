@@ -17,10 +17,7 @@ const routes = [
   {
     path: '/publishArticle',
     name: 'publishArticle',
-    component: () => import( '../views/PublishArticleView.vue'),
-    meta:{
-      keepAlive:true
-    }
+    component: () => import( '../views/PublishArticleView.vue')
   },
   {
     path: '/my',
