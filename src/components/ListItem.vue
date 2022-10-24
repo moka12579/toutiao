@@ -30,7 +30,6 @@
                 height="70"
                 lazy-load
                 :src="item1.imageSrc[0]"
-                referer="mokacui.work"
             />
           </div>
         </div>
