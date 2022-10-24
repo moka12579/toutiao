@@ -124,17 +124,15 @@ export default {
     },
     afterRead(file) {
       let index = this.uploader.findIndex(v => v.content === file.content)
-      axios.post({
-        url:"https://upload-z1.qiniup.com",
-        method:"post",
-        headers:{
-          "Content-Type":"multipart/form-data"
-        },
-        data:{
+      axios.post("https://upload-z1.qiniup.com",{
           token:this.uploadToken,
           file:file.file,
           key:new Date().getTime()+"-"+file.file.name
-        }
+        },{
+          method:"post",
+          headers:{
+            "Content-Type":"multipart/form-data;"
+          }
       }).then((res)=> {
         this.$set(this.uploader,index,{...this.uploader[index],status:"done",message:"上传完成"})
         this.publish.imageSrc.push(`${res.data.key}`)
