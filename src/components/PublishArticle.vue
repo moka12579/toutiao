@@ -130,7 +130,7 @@ export default {
         this.$set(this.uploader,index,{...this.uploader[index],status:"failed",message:"上传失败"})
       },res => {
         this.$set(this.uploader,index,{...this.uploader[index],status:"done",message:"上传完成"})
-        this.publish.imageSrc.push(`${res.key}`)
+        this.publish.imageSrc.push(`${!res.key?res.fname:res.key}`)
       })
     },
     publish1(){
