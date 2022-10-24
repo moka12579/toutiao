@@ -129,7 +129,6 @@ export default {
           file:file.file,
           key:new Date().getTime()+"-"+file.file.name
         },{
-          method:"post",
           headers:{
             "Content-Type":"multipart/form-data;"
           }
