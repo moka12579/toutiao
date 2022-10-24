@@ -164,7 +164,7 @@ export default {
       this.show=false
     },
     changeSex(event){
-      this.sex1 = event === 2 ? "女" : "男"
+      this.sex1 = event === "2" ? "女" : "男"
     }
   },
   mounted() {
@@ -174,7 +174,7 @@ export default {
     this.birthday = birthday ? birthday : new Date().toLocaleDateString()
     let arr = birthday.split("/")
     this.currentDate = new Date(arr[0],arr[1],arr[2])
-    this.sex = sex2 === "男" ? 1 : 2
+    this.sex = sex2 === "男" ? "1" : "2"
     getToken({
       url:"/upload/token"
     }).then(response => {
